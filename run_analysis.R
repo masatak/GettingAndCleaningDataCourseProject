@@ -33,25 +33,25 @@ subject       <- c(subject_test, subject_train)
 rm(subject_test, subject_train)
 
 # Bind subject number, activities and measurement data to one data set. 
-data1st <- cbind(subject, y, X)
+dataM <- cbind(subject, y, X)
 # Label the data set with descriptive variable names. 
-colnames(data1st) <- c("subject", "activity", as.character(features[colIndex]))
+colnames(dataM) <- c("subject", "activity", as.character(features[colIndex]))
 
 # Make tidy data set with the average of each variable for each activity and each subject.
-data2nd <- with(data1st, t(sapply(split(data1st[,-c(1,2)], list(activity, subject)), colMeans)))
+dataM <- with(dataM, t(sapply(split(dataM[,-c(1,2)], list(activity, subject)), colMeans)))
 labels  <- expand.grid(activity=sort(activity_labels), subject=sort(unique(subject)))
-data2nd <- data.frame(subject=labels$subject, activity=labels$activity, data2nd)
+dataM <- data.frame(subject=labels$subject, activity=labels$activity, dataM)
 
 # Check row assignment.
-# all(rownames(data2nd) == paste(as.character(data2nd$activity), data2nd$subject, sep="."))
-
-# Write tidy data set (wide format).
-write.table(data2nd, "run_analysis1.txt", row.name=FALSE, quote=FALSE)
+# all(rownames(dataM) == paste(as.character(dataM$activity), dataM$subject, sep="."))
 
 # Transform data set to long format.
 library(reshape2)
-data3rd <- melt(data2nd, id.vars=c("subject", "activity"), variable.name="feature")
+dataM <- melt(dataM, id.vars=c("subject", "activity"), variable.name="feature")
+
+# Separate values of feature column into three columns.
+library(tidyr)
+dataM <- separate(dataM, feature, c("feature", "statistics", "coordinate"), extra="drop")
 
 # Write tidy data set (long format).
-write.table(data3rd, "run_analysis2.txt", row.name=FALSE, quote=FALSE)
-
+write.table(dataM, "run_analysis.txt", row.name=FALSE, quote=FALSE)
