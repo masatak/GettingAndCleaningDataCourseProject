@@ -1,6 +1,6 @@
 # Codebook
 
-### analysis.txt
+### run_analysis.txt
 This file is produced by **run_analysis.R** script, and consists of  long formatted data of the average of features from data collected from the accelerometers from the Samsung Galaxy S smartphone.   
     
 #### columns
